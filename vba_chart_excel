@@ -1,0 +1,184 @@
+'el siguientes codigo es un sencillo generador de graricas con VBA. Obviamente, se le pueden colocar más objetos a cada gráfico
+'se deben de cambiar las referencias en las celdas, nombrar la tabla de donde provienen los datos; los colores también se pueden cambiar
+'obviamente se puede ampliar, mejorar de acuerdo a las necesidades de la operacion
+
+Sub generador_de_graficos()
+
+'Declarar variables
+
+Dim ws As Worksheet
+Dim ch As Chart
+Dim dt As Range
+
+Set ws = ActiveSheet
+'se usa la tabla de datos que se declaro previamente
+Set dt = Range("sales_data")
+'en esta línea se declara el tamaño que ocupará la gráfica y a partir de qué celdas
+Set ch = ws.Shapes.AddChart2(Width:=250, Height:=250, Left:=Range("G5").Left, Top:=Range("G5").Top).Chart
+
+'Introducir cuadro de opción de gráficas
+Dim opcion As Integer
+
+'*El código ASCII Chr(13) es salto de linea
+opcion = InputBox("Ingrese una de las 6 opciones disponibles para generar gráficos:" & Chr(13) & "1 = Barras horizontales" & Chr(13) & "2 = Barras verticales" & Chr(13) & "3 = Lineas con marcador" & Chr(13) & "4 = Dispercion" & Chr(13) & "5 = Barras apiladas" & Chr(13) & "6 = Pastel")
+
+'modulos para cada uno de los seis tipos de gráficos
+'-----
+'barras horizontales
+If opcion = 1 Then
+
+With ch
+
+    'llamada de fuente
+    .SetSourceData Source:=dt
+    'tipo de grafica
+    .ChartType = xlBarClustered
+    'objeto: texto (TITULO)
+    .ChartTitle.Text = "Ventas por mes"
+    'colocar etiquetas de datos
+    .SetElement msoElementDataLabelOutSideEnd
+    'quitar lineas guia (gradientes)
+    .SetElement msoElementPrimaryValueGridLinesNone
+    'leyendas arriba
+    .SetElement msoElementLegendTop
+    'quitar lineas de abscisas
+    .SetElement msoElementPrimaryValueAxisNone
+    .SetElement msoElementPrimaryCategoryAxisTitleBelowAxis
+    'titulo de eje
+    .Axes(xlCategory).AxisTitle.Text = "Mes"
+    'colores (se pueden cambiar en clave RGB)
+    .SeriesCollection("Ventas").Interior.Color = RGB(255, 0, 0)
+    'color del área de gráficado (se pueden cambiar en clave RGB)
+    .ChartArea.Format.Fill.ForeColor.RGB = RGB(221, 217, 185)
+
+End With
+
+End If
+
+'barras verticales
+If opcion = 2 Then
+
+With ch
+
+    .SetSourceData Source:=dt
+    .ChartType = xlColumnClustered
+    .ChartTitle.Text = "Ventas por mes"
+    .SetElement msoElementDataLabelOutSideEnd
+    .SetElement msoElementPrimaryValueGridLinesNone
+    .SetElement msoElementLegendTop
+    .SetElement msoElementPrimaryValueAxisNone
+    .SetElement msoElementPrimaryCategoryAxisTitleBelowAxis
+    .Axes(xlCategory).AxisTitle.Text = "Mes"
+    .SeriesCollection("Ventas").Interior.Color = RGB(255, 0, 0)
+    .ChartArea.Format.Fill.ForeColor.RGB = RGB(221, 217, 185)
+
+End With
+
+End If
+
+'lineas con marcadores
+If opcion = 3 Then
+
+With ch
+
+    .SetSourceData Source:=dt
+    .ChartType = xlLineMarkers
+    .ChartTitle.Text = "Ventas por mes"
+    .SetElement msoElementPrimaryValueGridLinesNone
+    .SetElement msoElementLegendTop
+    .SetElement msoElementPrimaryValueAxisNone
+    .SetElement msoElementPrimaryCategoryAxisTitleBelowAxis
+    .Axes(xlCategory).AxisTitle.Text = "Mes"
+    .SeriesCollection("Ventas").Interior.Color = RGB(255, 0, 0)
+    .ChartArea.Format.Fill.ForeColor.RGB = RGB(221, 217, 185)
+
+End With
+
+End If
+
+'dispercion
+If opcion = 4 Then
+
+With ch
+
+    .SetSourceData Source:=dt
+    .ChartType = xlXYScatter
+    .ChartTitle.Text = "Ventas por mes"
+    .SetElement msoElementPrimaryValueGridLinesNone
+    .SetElement msoElementLegendTop
+    .SetElement msoElementPrimaryValueAxisNone
+    .SetElement msoElementPrimaryCategoryAxisTitleBelowAxis
+    .Axes(xlCategory).AxisTitle.Text = "Mes"
+    .SeriesCollection("Ventas").Interior.Color = RGB(255, 0, 0)
+    .ChartArea.Format.Fill.ForeColor.RGB = RGB(221, 217, 185)
+
+End With
+
+End If
+
+'barras apiladas
+If opcion = 5 Then
+
+With ch
+
+    .SetSourceData Source:=dt
+    .ChartType = xlColumnStacked
+    .ChartTitle.Text = "Ventas por mes"
+    .SetElement msoElementPrimaryValueGridLinesNone
+    .SetElement msoElementLegendTop
+    .SetElement msoElementPrimaryValueAxisNone
+    .SetElement msoElementPrimaryCategoryAxisTitleBelowAxis
+    .Axes(xlCategory).AxisTitle.Text = "Mes"
+    .SeriesCollection("Ventas").Interior.Color = RGB(255, 0, 0)
+    .ChartArea.Format.Fill.ForeColor.RGB = RGB(221, 217, 185)
+
+End With
+
+End If
+
+'pastel
+If opcion = 6 Then
+
+With ch
+
+    .SetSourceData Source:=dt
+    .ChartType = xlPie
+    .ChartTitle.Text = "Ventas por mes"
+    .SetElement msoElementLegendTop
+    .SetElement msoElementDataLabelOutSideEnd
+    .ChartArea.Format.Fill.ForeColor.RGB = RGB(221, 217, 185)
+    
+   .SeriesCollection(1).Select
+    ActiveChart.FullSeriesCollection(1).Points(1).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(200, 200, 200)
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(1).Points(2).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(100, 90, 80)
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(1).Points(3).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(200, 160, 120)
+        .Transparency = 0
+        .Solid
+    End With
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 155, 55)
+        .Transparency = 0
+        .Solid
+    End With
+
+End With
+
+End If
+
+End Sub
